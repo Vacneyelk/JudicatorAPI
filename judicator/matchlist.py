@@ -14,8 +14,11 @@ class MatchList:
 			* timestamp : int
 	"""
 
-	def __init__(self, data: list):
-		self._data = data
+	def __init__(self, data: list=None):
+		if data is None:
+			self._data = []
+		else:
+			self._data = data
 
 	def raw_data(self):
 		return self._data
