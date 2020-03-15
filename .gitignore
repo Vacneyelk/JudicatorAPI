@@ -1,6 +1,6 @@
 # PERSONAL
 .vscode
-credentials.py
+judicator/hidden.py
 
 
 # Byte-compiled / optimized / DLL files
