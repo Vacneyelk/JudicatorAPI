@@ -29,8 +29,14 @@ class MatchList:
 		self._data.extend(matches)
 
 	def matches(self) -> [Match]:
-		""" returns list of Match objects """
-		return [Match(item) for item in self._data]
+		""" 
+			TODO: currently only returns match ids, it would potentially be useful to create an object for each match that makes use of limited match data returned https://developer.riotgames.com/apis#match-v4/GET_getMatchlist
+			
+			**Note**: That match data is different than the current Match object under judicator/match.py - potentially make new class of BasicMatch
+			
+			returns list of match ids 
+		"""
+		return [item['gameId'] for item in self._data]
 
 	def __str__(self):
 		return f"Matchlist: game count -> {len(self)}"
