@@ -19,7 +19,7 @@ class Match:
 
 	def game_id(self) -> int:
 		""" match id of the game """
-		return self._data['game_id']
+		return self._data['gameId']
 
 	def game_version(self) -> str:
 		""" version of the game match was played on """
