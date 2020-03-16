@@ -36,7 +36,8 @@ class MatchList:
 			
 			returns list of match ids 
 		"""
-		return [item['gameId'] for item in self._data]
+		# TODO: EXTREMELY HACKY AND NEEDS TO CHANGE, MATCHLIST MATCH DATA IS NOT THE SAME AS A MATCH OBJECT USED, LITERALLY BREAKING, REWORK INTO NEW MATCH OBJECT
+		return [Match(item) for item in self._data]
 
 	def __str__(self):
 		return f"Matchlist: game count -> {len(self)}"
