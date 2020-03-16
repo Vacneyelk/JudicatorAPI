@@ -19,7 +19,7 @@ class BaseAPI(RateLimiter):
 			Used for checking response code and handling things
 		"""
 		# TODO: add real code checking
-		if rsp.status_code != 200 or rsp.status_code != 429:
+		if rsp.status_code != 200 and rsp.status_code != 429:
 			rsp.raise_for_status()
 
 	def _api_call(self, platform: str, endpoint: str, parameters: dict) -> Response:
