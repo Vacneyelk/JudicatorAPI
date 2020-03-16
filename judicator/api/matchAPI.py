@@ -78,7 +78,7 @@ if __name__ == '__main__':
 	ml = mapi.get_matchlist_by_accountid(aid, exhaust=True)
 	print(ml)
 	games = ml.matches()
-	print(len(games))
+	print(games)
 	# print(ml._data)
 
 	# ml2 = mapi.get_matchlist_by_accountid(aid, begin_idx=99)
