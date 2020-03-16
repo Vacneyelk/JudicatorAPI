@@ -65,6 +65,9 @@ class MatchAPI(BaseAPI):
 		return matches
 
 	def get_match_by_matchid(self, match_id: str) -> Match:
+		"""
+			gets a match by its match id
+		"""
 		endpoint = f"{self.ep_matches_by_matchid}{match_id}"
 		rsp = self._api_call(self.platforms['NA1'], endpoint, {})
 		return Match(rsp.json())

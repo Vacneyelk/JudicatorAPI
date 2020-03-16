@@ -11,21 +11,33 @@ class SummonerAPI(BaseAPI):
 		self.ep_summoner_summonerid = '/lol/summoner/v4/summoners/'
 
 	def get_summoner_by_account_id(self, account_id: str) -> Summoner:
+		"""
+			gets summoner by their account id
+		"""
 		endpoint = f'{self.ep_summoner_by_accountid}{account_id}'
 		rsp = self._api_call(self.platforms['NA1'], endpoint, {})
 		return Summoner(rsp.json())
 
-	def get_summoner_by_name(self, name: str):
+	def get_summoner_by_name(self, name: str) -> Summoner:
+		"""
+			get summoner by their summoner name
+		"""
 		endpoint = f'{self.ep_summoner_by_name}{name}'
 		rsp = self._api_call(self.platforms['NA1'], endpoint, {})
 		return Summoner(rsp.json())
 
-	def get_summoner_by_puuid(self, puuid: str):
+	def get_summoner_by_puuid(self, puuid: str) -> Summoner:
+		"""
+			gets summoner by their puuid
+		"""
 		endpoint = f'{self.ep_summoner_by_puuid}{puuid}'
 		rsp = self._api_call(self.platforms['NA1'], endpoint, {})
 		return Summoner(rsp.json())
 
-	def get_summoner_by_summoner_id(self, summoner_id: str):
+	def get_summoner_by_summoner_id(self, summoner_id: str) -> Summoner:
+		"""
+			gets summoner by their summoner id
+		"""
 		endpoint = f'{self.ep_summoner_summonerid}{summoner_id}'
 		rsp = self._api_call(self.platforms['NA1'], endpoint, {})
 		return Summoner(rsp.json())
