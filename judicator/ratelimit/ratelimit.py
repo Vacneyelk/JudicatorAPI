@@ -76,6 +76,6 @@ class RateLimiter:
 			Returns:
 				None
 		"""
-		time.sleep(rsp.headers['Retry-After'])
+		time.sleep(int(rsp.headers['Retry-After']))
 		import sys
 		print("429 Error, revisit rate limiting", file=sys.stderr)
