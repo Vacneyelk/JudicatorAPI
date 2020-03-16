@@ -7,7 +7,7 @@ class Summoner():
 		self._data = data
 
 	def raw_data(self) -> dict:
-		""" raw dictionary data """"
+		""" raw dictionary data """
 		return self._data
 	
 	def name(self) -> str:
