@@ -9,7 +9,7 @@ class RateLimiter:
 	def __init__(self):
 		print('Init RateLimiter')
 
-	def _rate_limit(self, rsp: Response) -> None:
+	def _rate_limit(self, rsp: Response, debug: bool=False) -> None:
 		"""
 			When passed a response object from the riot api we sleep the application for a safe amount of time based on the headers provided by the response. For more information go to https://developer.riotgames.com/docs/portal#web-apis_rate-limiting
 
@@ -34,16 +34,28 @@ class RateLimiter:
 		app_rate_count = rsp.headers['X-App-Rate-Limit-Count'].split(',')
 		method_rate_count = rsp.headers['X-Method-Rate-Limit-Count'].split(',')
 
+
+		# build tuples of (sleep ratio, count ratio)
 		app_ratios = [helper(app_rate_limit[idx], app_rate_count[idx]) for idx in range(len(app_rate_limit))]
 		method_ratios = [helper(method_rate_limit[idx], method_rate_count[idx]) for idx in range(len(method_rate_limit))]
 
-		safe_app_ratio = self.__get_sleep_ratio(app_ratios)
-		safe_method_ratio = self.__get_sleep_ratio(method_ratios)
+		# combine all ratios and pick highest one
+		# should prevent 429 by limiting to the largest rate limting call/time ratio
+		ratios =  [item[0] for item in app_ratios + method_ratios]
+		ratios.sort()
 
-		if safe_app_ratio > safe_method_ratio:
-			time.sleep(safe_app_ratio[0])
-		else:
-			time.sleep(safe_method_ratio[0])
+		time.sleep(ratios[-1])
+
+		# Old ratio picking, didn't work but saved
+		# safe_app_ratio = self.__get_sleep_ratio(app_ratios)
+		# safe_method_ratio = self.__get_sleep_ratio(method_ratios)
+
+		# if safe_app_ratio > safe_method_ratio:
+		# 	print('Sleep app ratio:', safe_app_ratio[0])
+		# 	time.sleep(safe_app_ratio[0])
+		# else:
+		# 	print('Sleep method ratio:', safe_method_ratio[0])
+		# 	time.sleep(safe_method_ratio[0])
 
 	def __get_sleep_ratio(self, ratios: list, threshhold: float=0.95) -> float:
 		"""
@@ -79,3 +91,12 @@ class RateLimiter:
 		time.sleep(int(rsp.headers['Retry-After']))
 		import sys
 		print("429 Error, revisit rate limiting", file=sys.stderr)
+
+if __name__ == '__main__':
+	import requests
+	from judicator.config import API_KEY
+
+	rsp = requests.get('https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/OGmWKgOAk_k0iqZFuj-XUdfpfK7-qDLMtokjvU9w-aw_jw', params={'api_key' : API_KEY})
+
+	ratelim = RateLimiter()
+	print(ratelim._rate_limit(rsp, debug=True))
