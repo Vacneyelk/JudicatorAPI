@@ -74,7 +74,7 @@ class BaseAPI(RateLimiter):
 			Used for checking response code and handling things
 		"""
 		# TODO: add real code checking
-		if rsp.status_code != 200 and rsp.status_code != 429:
+		if rsp.status_code != 200 and rsp.status_code != 429 and rsp.status_code < 500:
 			rsp.raise_for_status()
 
 	def _api_call(self, platform: str, endpoint: str, parameters: dict) -> Response:
@@ -97,20 +97,23 @@ class BaseAPI(RateLimiter):
 
 		# TODO: this needs to be reworked into a better solution, requests.Session retries potential solution
 		# backoff implementation algo https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#module-urllib3.util.retry
-		backoff = 1.0
+		backoff = 5.0
 		max_retries = 5
 		retries = 1
+
 		while True:
 			rsp = requests.get(url, params=parameters)
-			self.__check_response_code(rsp)
 			if int(rsp.status_code) < 500:
 				break
 			else:
-				sleep( backoff * (2 ** (retries - 1)) )
+				rest_time = backoff * (2 ** (retries - 1))
+				sleep( rest_time )
+				print(f' Retry ({retries}), backing off: {rest_time}')
 				retries += 1
 			if retries > max_retries:
 				rsp.raise_for_status()
-
+		
+		self.__check_response_code(rsp)
 		self._rate_limit(rsp)
 		return rsp
 
