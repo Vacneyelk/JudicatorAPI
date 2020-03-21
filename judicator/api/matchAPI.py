@@ -19,12 +19,12 @@ class MatchAPI(BaseAPI):
 				account_id: the account id of a summoner
 				end_idx: ending index of games, max range is 100
 				begin_idx: beinning index of games, max range 100
+				seasons: set of season ids to filter the matchlist
 				exhaust: this will continue requesting games until all matches have been collected
 
 				NOT IMPLEMENTED
 				champions: set of champion ids to filter the matchlist
 				queues: set of queue ids to filter the matchlist
-				seasons: set of season ids to filter the matchlist
 				end_time: end of time range?
 				begin_time: beginning of time range?
 				
@@ -34,10 +34,13 @@ class MatchAPI(BaseAPI):
 		"""
 		parameters = {}
 
-		if champions is not None or queues is not None or seasons is not None or end_time is not None or begin_time is not None:
+		if champions is not None or end_time is not None or begin_time is not None:
 			raise NotImplementedError
 
-
+		if queues is not None:
+			parameters['queue'] = list(queues)
+		if seasons is not None:
+			parameters['season'] = list(seasons)
 		if end_idx is not None and begin_idx is not None:
 			if end_idx - begin_idx > 100:
 				raise Exception
@@ -54,13 +57,13 @@ class MatchAPI(BaseAPI):
 		while True:
 			endpoint = f"{self.ep_matchlist_by_accountid}{account_id}"
 			rsp = self._api_call(self.platforms['NA1'], endpoint, parameters)
+			print(rsp.url)
 			new_matches = rsp.json()['matches']
 			matches.add_matches(new_matches)
 			if exhaust and len(new_matches) >= 100:
 				parameters['beginIndex'] = len(matches)
 			else:
 				break
-
 
 		return matches
 
@@ -75,7 +78,9 @@ class MatchAPI(BaseAPI):
 if __name__ == '__main__':
 	mapi = MatchAPI()
 	aid = 'OGmWKgOAk_k0iqZFuj-XUdfpfK7-qDLMtokjvU9w-aw_jw'
-	ml = mapi.get_matchlist_by_accountid(aid, exhaust=True)
+	queues = set([430, 440])
+	ml = mapi.get_matchlist_by_accountid(aid, queues=queues, exhaust=True)
+	
 	print(ml)
 	games = ml.matches()
 	print(games)
