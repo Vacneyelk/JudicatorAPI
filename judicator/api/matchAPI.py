@@ -57,7 +57,6 @@ class MatchAPI(BaseAPI):
 		while True:
 			endpoint = f"{self.ep_matchlist_by_accountid}{account_id}"
 			rsp = self._api_call(self.platforms['NA1'], endpoint, parameters)
-			print(rsp.url)
 			new_matches = rsp.json()['matches']
 			matches.add_matches(new_matches)
 			if exhaust and len(new_matches) >= 100:
